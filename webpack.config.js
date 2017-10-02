@@ -79,7 +79,20 @@ module.exports = {
 				use: [
 					'base64-image-loader'
 				]
-			}
+			},
+			{
+		          test: require.resolve('three'),
+		          use: [{
+		              loader: 'expose-loader',
+		              options: 'THREE'
+		          }]
+		      }, {
+		          test: require.resolve('jquery'),
+		          use: [{
+		              loader: 'expose-loader',
+		              options: '$'
+		          }]
+		      },
 		],
 	},
 	resolve: {

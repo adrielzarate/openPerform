@@ -6,6 +6,8 @@ import _ from 'lodash'
 
 var OrbitControls = require('three-orbit-controls')(THREE);
 
+var Stats = require("imports-loader?THREE=three!three/examples/js/libs/stats.min.js");
+
 import Common from './../util/Common'
 
 import DepthDisplay from './displayComponents/DepthDisplay'

@@ -15,6 +15,14 @@ import Performers from './../../performers/Performers'
 
 import BVHPlayer from './../../performers/BVHPlayer'
 
+import "bootstrap/dist/css/bootstrap.css"
+import colors from './colors.css'
+import fonts from './fonts.css'
+import main from './main.css'
+import lowerDisplay from './lowerDisplay.css'
+import login from './login.css'
+
+
 import config from '../../config'
 
 class Main extends React.Component {
