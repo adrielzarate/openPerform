@@ -1,4 +1,4 @@
-var THREE = require('three');
+
 var bvhLoader = require('./../libs/three/loaders/BVHLoader.js');
 import Common from './../util/Common'
 
@@ -68,7 +68,7 @@ class BVHPlayer {
 			}), "name"), (part) => { return this.parseFrameData(part, part.name); });
 
 			if (bones.length > 0) {
-				this.callback('BVH_User_' + Object.keys(this.mixer._bindingsByRootAndName)[0], bones, 'perceptionNeuron')
+				this.callback('BVH_User_' + Object.keys(this.mixer._bindingsByRootAndName)[0], bones, 'bvh')
 			}
 		}
 	}

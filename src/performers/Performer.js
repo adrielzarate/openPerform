@@ -1,6 +1,6 @@
 //Parent should be a Three Scene, updateFromPN recieves data from PerceptionNeuron.js
 
-var THREE = require('three');
+
 var fbxLoader = require('./../libs/three/loaders/FBXLoader.js');
 var objLoader = require('./../libs/three/loaders/OBJLoader.js');
 var bvhLoader = require('./../libs/three/loaders/BVHLoader.js');
@@ -37,7 +37,7 @@ class Performer {
 		this.visible = true;
 		this.prefix = "robot_";
 
-		this.styles = ["default", "chairs", "hands", "heads", "spheres", "planes", "boxes", "robot", "discs", "oct"];
+		this.styles = ["default", "lines", "boxes", "spheres", "planes", "robot", "discs", "hands", "heads", "chairs", "hearts"];
 		this.styleId = 0;
 		this.style = this.styles[this.styleId];
 		this.intensity = 1;
@@ -56,20 +56,24 @@ class Performer {
 		// 	}
 		// ]);
 
-		this.loadObjModels([
-			{
-				id:'hand',
-				url: '/models/obj/hand.obj'
-			},
-			{
-				id:'head',
-				url: '/models/obj/head.obj'
-			},
-			{
-				id:'chair',
-				url: '/models/obj/chair.obj'
-			}
-		]);
+		// this.loadObjModels([
+		// 	{
+		// 		id:'hand',
+		// 		url: '/models/obj/hand.obj'
+		// 	},
+		// 	{
+		// 		id:'head',
+		// 		url: '/models/obj/head.obj'
+		// 	},
+		// 	{
+		// 		id:'chair',
+		// 		url: '/models/obj/chair.obj'
+		// 	},
+		// 	{
+		// 		id:'heart',
+		// 		url: '/models/obj/heart.obj'
+		// 	}
+		// ]);
 
 		this.scene = null;
 		this.modelShrink = 100;
@@ -231,9 +235,9 @@ class Performer {
 
 	loadColladaModel(id, url, callback) {
 		var loader = new THREE.ColladaLoader();
-		console.log(loader);
+		// console.log(loader);
 		loader.callbackProgress = function( progress, result ) {
-			console.log(progress);
+			// console.log(progress);
 		};
 		loader.load( url, function ( result ) {
 			var colladaScene = result.scene;
@@ -257,19 +261,19 @@ class Performer {
 
 		var manager = new THREE.LoadingManager();
 		manager.onProgress = ( item, loaded, total ) => {
-			console.log( item, loaded, total );
+			// console.log( item, loaded, total );
 		};
 		var onProgress = ( xhr ) => {
 			if ( xhr.lengthComputable ) {
 				var percentComplete = xhr.loaded / xhr.total * 100;
-				console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
+				// console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
 			}
 		};
 		var onError = ( xhr ) => {
 			console.error( xhr );
 		};
 		var loader = new THREE.FBXLoader( manager );
-		console.log(loader);
+		// console.log(loader);
 		loader.load( url, ( object ) => {
 			object.mixer = new THREE.AnimationMixer( object );
 			
@@ -297,24 +301,24 @@ class Performer {
 
 		var manager = new THREE.LoadingManager();
 		manager.onProgress = function ( item, loaded, total ) {
-			console.log( item, loaded, total );
+			// console.log( item, loaded, total );
 		};
 
 		var onProgress = function ( xhr ) {
 			if ( xhr.lengthComputable ) {
 				var percentComplete = xhr.loaded / xhr.total * 100;
-				console.log( Math.round(percentComplete, 2) + '% downloaded' );
+				// console.log( Math.round(percentComplete, 2) + '% downloaded' );
 			}
 		};
 
 		var onError = function ( xhr ) {};
 
 		var loader = new THREE.OBJLoader( manager );
-		console.log(loader);
+		// console.log(loader);
 		loader.load( url, ( object ) => {
 			let singleGeo = null
 			object.traverse(( child ) => {
-				console.log(child.name, child.type);
+				// console.log(child.name, child.type);
 				if ( child instanceof THREE.Mesh ) {
 					if (!singleGeo) {
 						singleGeo = child.geometry;
@@ -340,44 +344,24 @@ class Performer {
 		}
 	}
 
-	loadColladaBody(filename) {
+	loadColladaBody(source, filename, hide, size, style, intensity) {
 		this.prefix = "";
 		var loader = new THREE.ColladaLoader();
 		// loader.options.convertUpAxis = true;
 		loader.callbackProgress = function( progress, result ) {
-			console.log(progress);
+			// console.log(progress);
 		};
 		loader.load( filename, function ( result ) {
-			this.scene = result.scene;
-			this.getScene().scale.set(1/this.modelShrink,1/this.modelShrink,1/this.modelShrink);
-
-			this.getScene().traverse( function ( object ) {
-				if ( object.name.toLowerCase().match(/performer/g)) {
-					object.traverse( function ( part ) {
-						if (!this.performer) {
-							this.performer = {};
-							this.performerKeys = {};
-						}
-						this.performer[part.name.toLowerCase()] = part;
-						this.performerKeys[part.name.toLowerCase()] = part.name.toLowerCase();
-
-						part.castShadow = true;
-						part.receiveShadow = true;
-						part.visible = this.visible;
-					}.bind(this));
-				} /*else {
-					if(object.hasOwnProperty("material")){ 
-						object.material = new THREE.MeshPhongMaterial();
-						object.material.wireframe = this.wireframe;
-						object.material.color.set(parseInt(this.color,16));
-						
-						object.material.needsUpdate = true;
-					}
-				}*/
-			}.bind(this) );
-			
-			this.performerKeys= Common.getKeys(this.performerKeys, "");
-			
+			this.setScene(result.scene);
+			this.getScene().traverse( ( object ) => {
+				console.log(object);
+			});
+			this.setPerformer({
+				keys: [],
+				meshes: [],
+				newMeshes: [],
+				scene: this.getScene()
+			});
 			this.parent.add(this.getScene());
 
 		}.bind(this) );
@@ -388,7 +372,7 @@ class Performer {
 		var loader = new THREE.SceneLoader();
 		
 		loader.callbackProgress = ( progress, result ) => {
-			console.log(progress);
+			// console.log(progress);
 		};
 		loader.load( filename, ( result ) => {
 			this.setScene(result.scene);
@@ -495,7 +479,7 @@ class Performer {
 		this.setIntensity(intensity);
 		// this.parseBVHGroup("bvh", this.getHiddenParts(), this.getStyle(), intensity);
 		_.each(this.getPerformer().newMeshes, (mesh) => {
-			mesh.scale.set(intensity,intensity,intensity);
+			mesh.scale.set(mesh.srcScale*intensity,mesh.srcScale*intensity,mesh.srcScale*intensity);
 		});
 	}
 
@@ -551,73 +535,120 @@ class Performer {
 						object.geometry.computeBoundingSphere();
 						object.srcSphere = object.geometry.boundingSphere;
 					}
-
+					object.rotation.x = 0;
 					switch (style) {
 						case "spheres":
-							var scale = 0.01;//Common.mapRange(intensity, 1, 10, 0.01, 3)
+							var scale = 0.075;//Common.mapRange(intensity, 1, 10, 0.01, 3)
 							object.geometry = new THREE.SphereGeometry( 
 								object.srcSphere.radius*scale,
 							10, 10 );
+							object.srcScale = 1;
 							break;
 
 						case "planes":
-							var scale = 0.01;//Common.mapRange(intensity, 1, 10, 0.01, 1)
+							var scale = 0.0025;//Common.mapRange(intensity, 1, 10, 0.01, 1)
 							object.geometry = new THREE.BoxGeometry( 
 								object.srcSphere.radius*scale,
-							10, 10 );
+							3, 3 );
+							object.srcScale = 1;
 							break;
 
 						case "boxes":
-						var scale = 0.25;//Common.mapRange(intensity, 1, 10, 0.01, 5)
+						var scale = 0.125;//Common.mapRange(intensity, 1, 10, 0.01, 5)
 							object.geometry = new THREE.BoxGeometry( 
 								object.srcSphere.radius*scale,
 								object.srcSphere.radius*scale,
 								object.srcSphere.radius*scale
 							);
+							object.srcScale = 1;
 							break;
 
 						case "robot":
-							var scale = 1;//Common.mapRange(intensity, 1, 10, 0.01, 2)
+							var scale = 0.5;//Common.mapRange(intensity, 1, 10, 0.01, 2)
 							object.geometry = new THREE.BoxGeometry( 
 								object.srcBox.max.x*scale,
 								object.srcBox.max.z*scale,
 								object.srcBox.max.y*scale,
 							);
+							object.srcScale = 1;
 							break;
 
 						case "discs":
-							var scale = 1;//Common.mapRange(intensity, 1, 10, 0.01, 2)
+							var scale = 0.5;//Common.mapRange(intensity, 1, 10, 0.01, 2)
 							object.geometry = new THREE.CylinderGeometry(
 								object.srcBox.max.x*scale,
 								object.srcBox.max.x*scale,
 								object.srcBox.max.y*scale,
 								10
 							);
+							object.srcScale = 1;
 							break;
 
 						case "oct":
 							var scale = 0.1;//Common.mapRange(intensity, 1, 10, 0.01, 2)
 							object.geometry = new THREE.TetrahedronGeometry(object.srcSphere.radius*scale, 1);
 							object.geometry.needsUpdate = true;
+							object.srcScale = 1;
 							break;
 
 						case "hands":
 							object.geometry = this.getModelGeo("hand");
 							object.geometry.needsUpdate = true;
+							object.srcScale = object.srcSphere.radius*0.01;
+							object.scale.set(object.srcScale,object.srcScale,object.srcScale);
 							break;
 
 						case "heads":
 							object.geometry = this.getModelGeo("head");
 							object.geometry.needsUpdate = true;
+							object.rotation.x = Math.PI;
+							object.srcScale = object.srcSphere.radius*0.1;
+							object.scale.set(object.srcScale,object.srcScale,object.srcScale);
+							break;
+
+						case "hearts":
+							object.geometry = this.getModelGeo("heart");
+							object.geometry.needsUpdate = true;
+							object.srcScale = object.srcSphere.radius*0.001;
+							object.scale.set(object.srcScale,object.srcScale,object.srcScale);
 							break;
 
 						case "chairs":
 							object.geometry = this.getModelGeo("chair");
 							object.geometry.needsUpdate = true;
+							object.srcScale = object.srcSphere.radius*0.001;
+							object.scale.set(object.srcScale,object.srcScale,object.srcScale);
 							break;
 
 						case "oxygen":
 							object = this.getColladaScenes("oxygen");
+							object.srcScale = object.srcSphere.radius*0.1;
+							object.scale.set(object.srcScale,object.srcScale,object.srcScale);
+							break;
+
+						case "lines":
+							var l = 0;
+							var longest = null;
+							if (object.srcBox.max.x>l) {l=object.srcBox.max.x;longest="x";}
+							if (object.srcBox.max.y>l) {l=object.srcBox.max.y;longest="y";}
+							if (object.srcBox.max.z>l) {l=object.srcBox.max.z;longest="z";}
+
+							l = new THREE.Vector3();
+							l[longest] = object.srcBox.max[longest];
+
+							// console.log(l);
+
+							var lineGeo = new THREE.Geometry();
+							lineGeo.vertices.push( new THREE.Vector3( 0, 0, 0 ) );
+							lineGeo.vertices.push( l );
+
+							var lineMat = new THREE.LineBasicMaterial( {
+								color: 0xffffff,
+								linewidth: 10
+							} );
+
+							object = new THREE.Line( lineGeo, lineMat );
+							object.srcScale = 1;
 							break;
 					}
 					newMeshes.push(object);
@@ -670,6 +701,9 @@ class Performer {
 			case 'perceptionNeuron':
 				this.updateFromPN(data);
 			break;
+			case 'bvh':
+				this.updateFromPN(data);
+			break;
 		}
 
 		this.performerEffects.update(this.getScene());
@@ -681,7 +715,7 @@ class Performer {
 			if (!this.getPerformer()) {
 
 				this.loadPerformer(
-					"bvh",
+					this.type,
 					"bvhMeshGroup",
 					this.hiddenParts,
 					1/this.modelShrink,

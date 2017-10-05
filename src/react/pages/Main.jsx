@@ -29,6 +29,14 @@ class Main extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = config;
+		this.BVHFiles = [
+			"models/bvh/clover/cloverChar00.bvh",
+			"models/bvh/clover/clover_markingChar00.bvh",
+			"models/bvh/clover/clover_part2_1Char00.bvh",
+			"models/bvh/clover/clover_part2_2Char00.bvh",
+			"models/bvh/clover/clover_part2_3Char00.bvh",
+			"models/bvh/clover/clover_part2Char00.bvh"
+		];
 		this.BVHPlayers = [];
 	}
 
@@ -53,7 +61,7 @@ class Main extends React.Component {
 		this.performers.init(this.state.scene.scene);
 
 		if (this.state.debug) {
-			this.BVHPlayer = this.addBVHPerformer("models/bvh/cloverChar00.bvh");
+			this.BVHPlayer = this.addBVHPerformer(this.BVHFiles[0]);
 		}
 	}
 
