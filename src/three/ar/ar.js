@@ -1,6 +1,6 @@
 'use strict'
 
-var THREE = require('three');
+
 import _ from 'lodash'
 import $ from 'jquery'
 

@@ -7,8 +7,6 @@
 *
 */
 
- var THREE = require('three');
-
 ( function () {
 
 THREE.BVHLoader = function( manager ) {

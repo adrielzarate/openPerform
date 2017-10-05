@@ -14,9 +14,6 @@
  * Shader and javascript packing code derrived from several Stack Overflow examples.
  *
  */
-
-var THREE = require('three');
-
 THREE.GPUParticleSystem = function(options) {
 
 	var self = this;

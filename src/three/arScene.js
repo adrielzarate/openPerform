@@ -1,4 +1,4 @@
-var THREE = require('three');
+
 
 var ARUtils = require("./ar/three.ar.js");
 

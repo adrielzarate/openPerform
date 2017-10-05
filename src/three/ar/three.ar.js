@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-var THREE = require('three');
+
 
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache

@@ -14,8 +14,6 @@
  *  - morph
  */
 
-var THREE = require('three');
-
 ( function() {
 
 	THREE.FBXLoader = function ( manager ) {

@@ -1,5 +1,3 @@
-var THREE = require('three');
-
 THREE.BufferGeometry.prototype.merge = function ( geometry ) {
 
     if ( geometry instanceof THREE.BufferGeometry === false ) {

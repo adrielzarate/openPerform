@@ -1,6 +1,6 @@
-var THREE = require('three');
 
-import $ from 'jquery'
+
+// import $ from 'jquery'
 import TWEEN from 'tween'
 import _ from 'lodash'
 

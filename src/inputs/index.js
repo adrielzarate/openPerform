@@ -3,7 +3,6 @@ methods and handles response data and
 callbacks to the threejs environment.
 The input list is defined in config/index.js*/
 
-var THREE = require('three');
 import _ from 'lodash'
 import TWEEN from 'tween'
 
@@ -53,6 +52,7 @@ class InputManager {
 			break;
 		case 'gamepads':
 			this.inputs[type] = new Gamepads('ws://'+window.location.hostname+':' + config.gamepads.ports.outgoing);
+			this.initGamepadCallbacks();
 			break;
 		case 'midiController':
 			this.inputs[type] = new MidiController('ws://'+window.location.hostname+':' + config.midiController.ports.outgoing);
@@ -130,6 +130,13 @@ class InputManager {
 		this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].randomizeAll(5000);
 	}
 
+	
+	initGamepadCallbacks() {
+		this.registerCallback('gamepads', 'message', 'Gamepad', (data) => {
+			console.log("WTF?!", data);
+		});
+	}
+
 	initMidiControllerCallbacks() {
 		this.performerIdx = 0;
 		this.registerCallback('midiController', 'message', 'Midi Controller', function(data) {
@@ -191,7 +198,7 @@ class InputManager {
 
 				case 'record':
 					if (this.parent.BVHPlayers.length<=8) {
-						this.parent.addBVHPerformer("models/bvh/cloverChar00.bvh")
+						this.parent.addBVHPerformer(this.parent.BVHFiles[this.parent.BVHPlayers.length])
 					} else {
 						console.log("BVH Limit Reached!");
 					}

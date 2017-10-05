@@ -8,7 +8,6 @@
 //=======================================
 // Trail Renderer
 //=======================================
-var THREE = require('three');
 THREE.TrailRenderer = function( scene, orientToMovement ) {
 
     THREE.Object3D.call( this );

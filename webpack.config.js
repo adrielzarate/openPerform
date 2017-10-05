@@ -10,7 +10,7 @@ module.exports = {
 		'react-hot-loader/patch',
 		// activate HMR for React
 
-		'webpack-dev-server/client?http://localhost:8080',
+		'webpack-dev-server/client?http://0.0.0.0:8080',
 		// bundle the client for webpack-dev-server
 		// and connect to the provided endpoint
 
@@ -40,8 +40,11 @@ module.exports = {
 		contentBase: resolve(__dirname, 'dist'),
 		// match the output path
 
-		publicPath: '/'
+		publicPath: '/',
 		// match the output `publicPath`
+
+		host: '0.0.0.0',
+		port: 8080
 	},
 	module: {
 		rules: [
@@ -79,20 +82,7 @@ module.exports = {
 				use: [
 					'base64-image-loader'
 				]
-			},
-			{
-		          test: require.resolve('three'),
-		          use: [{
-		              loader: 'expose-loader',
-		              options: 'THREE'
-		          }]
-		      }, {
-		          test: require.resolve('jquery'),
-		          use: [{
-		              loader: 'expose-loader',
-		              options: '$'
-		          }]
-		      },
+			}
 		],
 	},
 	resolve: {
@@ -109,8 +99,20 @@ module.exports = {
 		// export css to separate file
 
         new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery"
-        })
+			$: "jquery",
+			jQuery: "jquery",
+			"window.jQuery": "jquery",
+			"THREE": 'three',
+			"window.THREE": 'three'
+		}),
+
+		new webpack.optimize.CommonsChunkPlugin({
+		  name: "vendor",
+		  filename: "vendor.js",
+		  minChunks: function (module) {
+		    // this assumes your vendor imports exist in the node_modules directory
+		    return module.context && module.context.indexOf("node_modules") !== -1;
+		  }
+		})
     ]
 };

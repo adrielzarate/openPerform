@@ -1,5 +1,4 @@
 import _ from 'lodash'
-var THREE = require('three');
 var GPUParticleSystem = require('./../../libs/three/GPUParticleSystem');
 
 import config from './../../config'

@@ -1,5 +1,4 @@
 import _ from 'lodash'
-var THREE = require('three');
 
 var TextSprite = require('./../../libs/THREE.TextSprite.js');
 

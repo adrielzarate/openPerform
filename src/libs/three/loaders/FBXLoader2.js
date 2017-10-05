@@ -18,8 +18,6 @@
  * 	PreRotation support.
  */
 
- var THREE = require('three');
-
 ( function () {
 
 	/**

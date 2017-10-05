@@ -1,7 +1,5 @@
 import _ from 'lodash'
 
-var THREE = require('three');
-
 import WaterShader from '../shaders/WaterShader'
 import OceanShader from '../shaders/OceanShader'
 import Ocean from '../libs/ocean'

@@ -1,6 +1,3 @@
-
-var THREE = require('three');
-
 THREE.Ocean = function ( renderer, camera, scene, options ) {
 
     // flag used to trigger parameter changes

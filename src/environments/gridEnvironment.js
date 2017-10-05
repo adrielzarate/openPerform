@@ -1,7 +1,5 @@
 import _ from 'lodash'
 
-var THREE = require('three');
-
 import config from './../config'
 
 class GridEnvironment {

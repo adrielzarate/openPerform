@@ -1,4 +1,3 @@
-var THREE = require('three');
 var TextTexture = require('./THREE.TextTexture.min.js');
 
 (function(THREE) {

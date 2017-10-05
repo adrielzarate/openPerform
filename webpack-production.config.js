@@ -2,6 +2,12 @@ const webpack = require('webpack');
 const { resolve } = require('path');
 
 module.exports = {
+	/*watch: true,
+	watchOptions: {
+		aggregateTimeout: 300,
+		poll: 1000,
+		ignored: '/node_modules/'
+	},*/
 	context: resolve(__dirname, 'src'),
 	entry: [
 		'./index.jsx',
@@ -73,6 +79,22 @@ module.exports = {
 		    screw_ie8: false
 		  },
 		  comments: false
+		}),
+		new webpack.ProvidePlugin({
+			$: "jquery",
+			jQuery: "jquery",
+			"window.jQuery": "jquery",
+			"THREE": 'three',
+			"window.THREE": 'three'
+		}),
+
+		new webpack.optimize.CommonsChunkPlugin({
+		  name: "vendor",
+		  filename: "vendor.js",
+		  minChunks: function (module) {
+		    // this assumes your vendor imports exist in the node_modules directory
+		    return module.context && module.context.indexOf("node_modules") !== -1;
+		  }
 		})
 	]
 }

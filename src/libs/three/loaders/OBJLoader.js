@@ -2,8 +2,6 @@
  * @author mrdoob / http://mrdoob.com/
  */
 
-var THREE = require('three');
-
 THREE.OBJLoader = function ( manager ) {
 
 	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;

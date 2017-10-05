@@ -2,7 +2,6 @@
  * @author alteredq / http://alteredqualia.com/
  */
 
-var THREE = require('three');
 var JSONScene = require('./../../../models/json/avatar.json');
 
 THREE.SceneLoader = function ( manager ) {

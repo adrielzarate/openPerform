@@ -6,8 +6,6 @@
 * Currently only supports bvh files containing a single root.
 *
 */
-var THREE = require('three');
-
 THREE.BVHLoader = function( manager ) {
 
 	this.animateBonePositions = true;

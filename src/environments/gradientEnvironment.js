@@ -1,7 +1,5 @@
 import _ from 'lodash'
 
-var THREE = require('three');
-
 require("./../libs/three/SkyShader.js");
 
 import config from './../config'
