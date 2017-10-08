@@ -19,9 +19,9 @@ import "bootstrap/dist/css/bootstrap.css"
 import colors from './colors.css'
 import fonts from './fonts.css'
 import main from './main.css'
+import upperDisplay from './upperDisplay.css'
 import lowerDisplay from './lowerDisplay.css'
 import login from './login.css'
-
 
 import config from '../../config'
 
@@ -62,6 +62,30 @@ class Main extends React.Component {
 
 		if (this.state.debug) {
 			this.BVHPlayer = this.addBVHPerformer(this.BVHFiles[0]);
+		}
+
+		if (this.state.console2html) {
+			var ConsoleLogHTML = require('console-log-html');
+			
+			var con = document.createElement("ul");
+			con.style.color = "#FFFFFF";
+			
+			var div = document.getElementById("consoleOutput");
+			div.appendChild(con);
+			document.getElementsByTagName("BODY")[0].appendChild(div);
+
+			ConsoleLogHTML.connect(
+				con,
+				{},
+				true,
+				false,
+				true
+			); // Redirect log messages
+
+			//once a second
+			setInterval(() => {
+				div.scrollTop = div.scrollHeight;
+			},1000);
 		}
 	}
 
@@ -183,7 +207,9 @@ class Main extends React.Component {
 	render() {
 		return (
 			<div className="container-fluid" id="page">
+				<div id="consoleOutput"></div>
 				<div id="scenes"></div>
+				<div id="upperDisplay"></div>
 				<div id="lowerDisplay">
 					<InputList inputs={this.state.inputs}></InputList>
 					<PerformerList performers={this.state.performers}></PerformerList>

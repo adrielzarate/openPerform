@@ -1,7 +1,8 @@
 import config from './../../server/config.js'
 
 var defaults = {
-	debug: true,
+	debug: false, //load bvh file / create performer from playback
+	console2html: false,
 	scene:null,
 	camera: {
 		closeShot: {
