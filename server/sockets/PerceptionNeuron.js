@@ -49,8 +49,8 @@ class PerceptionNeuron {
 	
 	onListenError(err) {
 		console.log('Perception Neuron Error ', err);
-		console.log('Trying again in 3000ms');
-		setTimeout(this.createListenServer.bind(this), 3000);
+		// console.log('Trying again in 3000ms');
+		// setTimeout(this.createListenServer.bind(this), 3000);
 	}
 	
 	onListenMessage(msg) {

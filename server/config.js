@@ -42,7 +42,7 @@ var config = {
 		}
 	},
 	gamepads: {
-		enabled: false,
+		enabled: true,
 		ports: {
 			outgoing:9101 //port the browser connects on
 		}
@@ -50,7 +50,7 @@ var config = {
 	midiController: {
 		enabled: true,
 		ports: {
-			outgoing:9201 //port the browser connects on
+			outgoing:9301 //port the browser connects on
 		}
 	},
 	mapzen: {

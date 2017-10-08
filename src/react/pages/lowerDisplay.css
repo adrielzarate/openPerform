@@ -1,12 +1,46 @@
 #lowerDisplay {
-	position: absolute;
+	position: relative;
 	bottom: 0;
 	width: 100%;
-	display: none;
+	/*display: none;*/
 }
 
 .dg.ac {
-	display: none;
+	/*display: none;*/
+}
+
+#controllerDebug {
+	position: relative;
+	color: #fff;
+	bottom: 0;
+	padding: 10px;
+	border: 1px solid white;
+	border-radius: 10px;
+	margin: 10px;
+	display: inline-block;
+	float: left;
+	box-shadow: 1px 1px 1px #000000;
+	background: rgba(0, 0, 0, 0.25);
+}
+
+#controllerDebug h5 {
+	margin-top: 0;
+	padding-bottom: 5px;
+	border-bottom: 1px solid white;
+	text-shadow: 1px 1px 2px #000000;
+}
+
+#controllerDebug ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+#controllerDebug li {
+	text-transform: capitalize;
+	padding: 0;
+	margin: 0;
+	text-shadow: 1px 1px 2px #000000;
 }
 
 .inputList {

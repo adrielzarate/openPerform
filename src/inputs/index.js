@@ -133,7 +133,51 @@ class InputManager {
 	
 	initGamepadCallbacks() {
 		this.registerCallback('gamepads', 'message', 'Gamepad', (data) => {
-			console.log("WTF?!", data);
+			var leftStick = _.merge(_.map(_.filter(data, (d)=>d.id.slice(0,4)=="Left"), (d)=>{
+				var obj = {}
+				obj[d.id.slice(d.id.length-1,d.id.length).toLowerCase()] = d.value;
+				return obj;
+			}));
+			if (leftStick.length>0) { console.log("Left Stick: ", leftStick) }
+
+
+			var rightStick = _.merge(_.map(_.filter(data, (d)=>d.id.slice(0,5)=="Right"), (d)=>{
+				var obj = {}
+				obj[d.id.slice(d.id.length-1,d.id.length).toLowerCase()] = d.value;
+				return obj;
+			}));
+			if (rightStick.length>0) { console.log("Right Stick: ", rightStick) }
+
+			var dPad = _.merge(_.map(_.filter(data, (d)=>d.id.slice(0,4)=="DPad"), (d)=>{
+				var obj = {}
+				obj[d.id.slice(d.id.length-1,d.id.length).toLowerCase()] = d.value;
+				return obj;
+			}));
+			if (dPad.length>0) { console.log("DPad Stick: ", dPad) }
+
+			var aButton = _.filter(data, (d)=>d.id=="A");
+			if (aButton.length>0) { console.log("A Button: ", aButton) }
+
+			var bButton = _.filter(data, (d)=>d.id=="B");
+			if (bButton.length>0) { console.log("B Button: ", bButton) }
+
+			var xButton = _.filter(data, (d)=>d.id=="X");
+			if (xButton.length>0) { console.log("X Button: ", xButton) }
+
+			var yButton = _.filter(data, (d)=>d.id=="Y");
+			if (yButton.length>0) { console.log("Y Button: ", yButton) }
+
+			var lbButton = _.filter(data, (d)=>d.id=="LB");
+			if (lbButton.length>0) { console.log("LB Button: ", lbButton) }
+
+			var rbButton = _.filter(data, (d)=>d.id=="RB");
+			if (rbButton.length>0) { console.log("RB Button: ", rbButton) }
+
+			var ltButton = _.filter(data, (d)=>d.id=="LT");
+			if (ltButton.length>0) { console.log("LT Button: ", ltButton) }
+
+			var rtButton = _.filter(data, (d)=>d.id=="RT");
+			if (rtButton.length>0) { console.log("RT Button: ", rtButton) }
 		});
 	}
 
