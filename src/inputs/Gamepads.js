@@ -7,7 +7,7 @@ class Gamepads {
 		this.websocket = null;
 
 		this.showDebugger =  true;
-		this.debugEl = null;
+		this.debugEls = {};
 
 		this.buttonKeys = ["A", "B", "X", "Y", "LB", "RB", "LT", "RT"];
 		this.axesKeys = ["Left X", "Left Y", "Right X", "Right Y", "DPad X", "DPad Y"];
@@ -38,7 +38,20 @@ class Gamepads {
 	}
 	
 	onMessage(msg) {
-		this.callbacks["message"](JSON.parse(msg.data));
+		var inputs = JSON.parse(msg.data);
+		_.each(inputs, (i, key) => {
+			this.callbacks["message"](i, key);
+			
+			if (this.showDebugger) {
+				if (!this.debugEls[key]) {
+					this.debugEls[key] = document.createElement("div");
+					this.debugEls[key].className = "controllerDebug";
+					document.getElementById("lowerDisplay").appendChild(this.debugEls[key]);
+				}
+				this.updateDebugger(this.debugEls[key], i, key);
+			}
+
+		});
 	}
 
 	onError(evt) {
@@ -49,10 +62,12 @@ class Gamepads {
 		this.callbacks[name] = cb;
 	}
 
-	send(msg) {
+	send(msg, gamepadId) {
 		if (this.connected) {
 			try {
-				this.websocket.send(JSON.stringify(msg), this.onError);
+				var obj = {};
+				obj[gamepadId] = msg;
+				this.websocket.send(JSON.stringify(obj), this.onError);
 			}
 			catch(err) {
 				this.onError(err);
@@ -70,33 +85,26 @@ class Gamepads {
 	}
 
 	update() {
-		var g = _.each(navigator.getGamepads(), (g)=> { if (g!==null) {
-			var inputs = _.concat(_.compact(_.map(g.buttons, (b, idx) => { if (this.buttonPressed(b.pressed)) {
-				return {
-					id: this.buttonKeys[idx],
-					pressed: b.pressed,
-					value: b.value
-				}
-			}})),
-			_.compact(_.map(g.axes, (a, idx) => { if (a!==0) {
-				return {
-					id: this.axesKeys[idx],
-					value: a
-				}
-			}})));
+		_.each(navigator.getGamepads(), (g)=> { if (g!==null) {
+			var inputs = _.concat(
+				_.compact(_.map(g.buttons, (b, idx) => { if (this.buttonPressed(b.pressed)) {
+					return {
+						id: this.buttonKeys[idx],
+						pressed: b.pressed,
+						value: b.value
+					}
+				}})),
+				_.compact(_.map(g.axes, (a, idx) => { if (a!==0) {
+					return {
+						id: this.axesKeys[idx],
+						pressed: (a>0),
+						value: a
+					}
+				}}))
+			);
 
 			if (inputs.length>0) {
-				this.send(inputs);
-			}
-
-			if (this.showDebugger) {
-				if (!this.debugEl) {
-					this.debugEl = document.createElement("div");
-					this.debugEl.id = "controllerDebug";
-					document.getElementById("lowerDisplay").appendChild(this.debugEl);
-				}
-
-				this.updateDebugger(this.debugEl, inputs, g.index+1);
+				this.send(inputs, g.index+1);
 			}
 		}});
 		
@@ -106,17 +114,13 @@ class Gamepads {
 	updateDebugger(container, inputs, id) {
 		container.innerHTML = "";
 		var title = document.createElement("h5");
-		title.innerHTML = "Controller #" + id;
+		title.innerHTML = "Gamepad #" + id;
 		container.appendChild(title);
 
 		var list = document.createElement("ul");
 		_.each(inputs, (input, idx) => {
 			var i = document.createElement("li");
-			var text = input.id + ": " + input.value;
-			if (input.pressed) {
-				text += " ("+ input.pressed + ")";
-			}
-			i.innerHTML = text;
+			i.innerHTML = input.id + ": " + input.value + " ("+ input.pressed + ")";
 			list.appendChild(i);
 		});
 		

@@ -7,6 +7,9 @@ class PerformerList extends React.Component {
 		this.state = {};
 	}
 	render() {
+		if (this.props.performers.length==0) {
+			return false;
+		}
 		return (
 			<div className="performerList">
 				<h5>Active Performers</h5>
