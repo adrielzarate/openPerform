@@ -1,7 +1,8 @@
 import config from './../../server/config.js'
 
 var defaults = {
-	debug: false, //load bvh file / create performer from playback
+	debug: true, //load bvh file / create performer from playback
+	backgroundColor: 0x333333,
 	console2html: false,
 	scene:null,
 	camera: {
@@ -23,7 +24,7 @@ var defaults = {
 	inputs:['keyboard', 'mouse', 'perceptionNeuron', 'midiController', 'gamepads'], //keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
 	performers:[],
 	// performerColors: ['FFFFFF', 'CB2402', 'F0F7FA', '5992AE', 'FF009B'],
-	performerColors: ['FFFFFF', '0000FF', '5992AE', 'CB2402', '666566', 'ffffff'],
+	performerColors: ['FFFFFF', 'FFFFFF', 'FFFFFF', 'FFFFFF', 'FFFFFF', 'FFFFFF'],
 	// performerColors: ['FF0000', '00FF00', '0000FF'],
 	myo:null,
 	kinectTransport:{

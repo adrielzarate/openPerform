@@ -1,5 +1,5 @@
 #lowerDisplay {
-	position: relative;
+	position: absolute;
 	bottom: 0;
 	width: 100%;
 	/*display: none;*/
@@ -89,6 +89,22 @@
 	float: left;
 	box-shadow: 1px 1px 1px #000000;
 	background: rgba(0, 0, 0, 0.25);
+}
+
+.performerList #performerTable td {
+	padding: 5px 10px;
+}
+
+.performerList #controlsTable td {
+	padding: 5px 5px;
+}
+
+.performerList #controlsTable td div {
+	cursor: pointer; cursor: hand;
+}
+
+.performerList .Select {
+	width: 130px;
 }
 
 .performerList h5 {

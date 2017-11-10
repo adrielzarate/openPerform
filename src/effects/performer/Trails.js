@@ -15,9 +15,9 @@ class Trails {
 		
 		this.targets = [/*"hips",
 			"rightupleg", "rightleg", "rightfoot",
-			/*"leftupleg", "leftleg", "leftfoot",*/
-			/*"spine", "spine3", */"head",
-			/*"rightarm", "rightforearm", */"righthand",
+			"leftupleg", "leftleg", "leftfoot",
+			"spine", "spine3", "head",
+			"rightarm", "rightforearm", */"righthand",
 			/*"leftarm", "leftforearm", */"lefthand"
 		];
 
@@ -27,7 +27,7 @@ class Trails {
 		this.circlePoints = [];
 		this.twoPI = Math.PI * 2;
 		this.index = 10;
-		this.scale = 5;
+		this.scale = 2;
 		this.inc = this.twoPI / 32.0;
 
 		for ( var i = 0; i <= this.twoPI + this.inc; i+= this.inc )  {
@@ -38,12 +38,14 @@ class Trails {
 		}
 		this.trailHeadGeometry = this.circlePoints;
 
+		// var head = Common.hexToRgb("#ffffff");
+		// var tail = Common.hexToRgb("#eeeeee");
 		var head = Common.hexToRgb("#352f9d");
-		var tail = Common.hexToRgb("#432066");
+		var tail = Common.hexToRgb("#ff0000");
 
 		// initialize the trail
 		this.options = {
-			trailLength : 125,
+			trailLength : 250,
 			headRed : Common.mapRange(head[0],0,255,0,1),
 			headGreen : Common.mapRange(head[1],0,255,0,1),
 			headBlue : Common.mapRange(head[2],0,255,0,1),

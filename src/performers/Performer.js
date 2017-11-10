@@ -19,7 +19,12 @@ import _ from 'lodash'
 import dat from 'dat-gui'
 
 class Performer {
-	constructor(parent, inputId, performerId, type, color) {
+	constructor(parent, inputId, performerId, type, color, offset, visible, actions) {
+		this.actions = actions;
+
+		this.dataBuffer = [];
+		this.offsetScale = 2.5;
+		this.offset = offset;
 		this.colors = [ "#036B75", "#0x0AFCE8", "#0xFCE508", "#0xFA0AE3", "#0x260C58" ];
 
 		this.styleInt = null;
@@ -34,13 +39,15 @@ class Performer {
 		this.name = "Performer " + performerId;
 		this.color = color;
 		this.wireframe = true;
-		this.visible = true;
+		this.visible = visible;
 		this.prefix = "robot_";
 
-		this.styles = ["default", "lines", "boxes", "spheres", "planes", "robot", "discs", "hands", "heads", "chairs", "hearts"];
+		this.styles = ["default", "boxes", "spheres", "planes", "robot", "discs", "hands", "heads", /*"chairs", "hearts"*/];
 		this.styleId = 0;
 		this.style = this.styles[this.styleId];
 		this.intensity = 1;
+
+		this.displayType = "bvhMeshGroup";
 
 		// this.loadColladaModels([
 		// 	{
@@ -56,24 +63,24 @@ class Performer {
 		// 	}
 		// ]);
 
-		// this.loadObjModels([
-		// 	{
-		// 		id:'hand',
-		// 		url: '/models/obj/hand.obj'
-		// 	},
-		// 	{
-		// 		id:'head',
-		// 		url: '/models/obj/head.obj'
-		// 	},
-		// 	{
-		// 		id:'chair',
-		// 		url: '/models/obj/chair.obj'
-		// 	},
-		// 	{
-		// 		id:'heart',
-		// 		url: '/models/obj/heart.obj'
-		// 	}
-		// ]);
+		this.loadObjModels([
+			{
+				id:'hand',
+				url: '/models/obj/hand.obj'
+			},
+			{
+				id:'head',
+				url: '/models/obj/head.obj'
+			},
+			/*{
+				id:'chair',
+				url: '/models/obj/chair.obj'
+			},
+			{
+				id:'heart',
+				url: '/models/obj/heart.obj'
+			}*/
+		]);
 
 		this.scene = null;
 		this.modelShrink = 100;
@@ -190,22 +197,7 @@ class Performer {
 
 
 		this.hiddenParts = [
-			
-			// 'lefthandthumb',
-			// 'leftinhandindex',
-			// 'leftinhandmiddle',
-			// 'leftinhandring',
-			// 'leftinhandpinky',
-
-			// 'righthandthumb',
-			// 'rightinhandindex',
-			// 'rightinhandmiddle',
-			// 'rightinhandring',
-			// 'rightinhandpinky',
-
-			// 'leftfoot',
-			// 'rightfoot'
-
+			// "hips"
 			];
 
 		console.log("New Performer: ", this.inputId);
@@ -345,25 +337,70 @@ class Performer {
 	}
 
 	loadColladaBody(source, filename, hide, size, style, intensity) {
-		this.prefix = "";
-		var loader = new THREE.ColladaLoader();
-		// loader.options.convertUpAxis = true;
+		this.prefix = "robot_";
+		
+		this.setPerformer(
+			{
+				meshes: {},
+				newMeshes: [],
+				keys: {},
+				scene: null
+			}
+		);
+
+
+		var loadingManager = new THREE.LoadingManager( () => {
+			this.parent.add(this.getScene());
+		} );
+
+		var loader = new THREE.ColladaLoader( loadingManager );
+
 		loader.callbackProgress = function( progress, result ) {
 			// console.log(progress);
 		};
-		loader.load( filename, function ( result ) {
-			this.setScene(result.scene);
-			this.getScene().traverse( ( object ) => {
-				console.log(object);
-			});
-			this.setPerformer({
-				keys: [],
-				meshes: [],
-				newMeshes: [],
-				scene: this.getScene()
-			});
-			this.parent.add(this.getScene());
 
+		loader.load( filename, function ( result ) {
+			var meshes = {};
+			var keys = {};
+			var s = null;
+			result.scene.traverse( ( object ) => {
+				switch(object.type) {
+					case "SkinnedMesh":
+						console.log(object);
+						switch (source) {
+							case "bvh":
+								object.scale.set(size, size, size);
+								s = object;
+								break;
+						}
+						break;
+					// case "Bone":
+					// 	meshes[this.prefix+object.name.toLowerCase()] = object;
+					// 	keys[this.prefix+object.name.toLowerCase()] = object.name.toLowerCase();
+					// 	break;
+				}
+			});
+
+			console.log(s.skeleton);
+
+			_.each(s.skeleton.bones, (b) => {
+				meshes[this.prefix+b.name.toLowerCase()] = b;
+				keys[this.prefix+b.name.toLowerCase()] = this.prefix+b.name.toLowerCase();
+			});
+
+			console.log(meshes);
+			console.log(keys);
+
+			this.setScene(s);
+
+			this.setPerformer(
+				{
+					meshes: meshes,
+					newMeshes: [],
+					keys: keys,
+					scene: this.getScene()
+				}
+			);
 		}.bind(this) );
 	}
 
@@ -383,8 +420,10 @@ class Performer {
 			}
 
 			this.setPerformer(this.parseBVHGroup(source, hide, style, intensity));
-			this.parent.add(this.getScene());
-			// this.addEffects([this.effects[Math.floor(Math.random()*this.effects.length)]]);//defaults
+			var s = this.getScene();
+			s.position.x = this.offset*this.offsetScale;
+			this.parent.add(s);
+			this.addEffects([this.effects[0]]);//defaults
 
 		});
 	}
@@ -395,6 +434,28 @@ class Performer {
 
 	getPerformer() {
 		return this.performer;
+	}
+
+	clearPerformer() {
+		this.clearScene();
+		this.setPerformer(null);
+	}
+
+	setType(type) {
+		console.log(type);
+		if (this.getType() !== type) {
+			this.displayType = type;
+			this.clearPerformer();
+		}
+	}
+
+	getType(type) {
+		return this.displayType;
+	}
+
+	clearScene() {
+		this.parent.remove(this.getScene());
+		this.setScene(null);
 	}
 
 	setScene(scene) {
@@ -505,11 +566,12 @@ class Performer {
 
 					if (_.some(hide, (el) => _.includes(object.name.toLowerCase(), el))) {
 						object.visible = false;
+					} else {
+						object.visible = this.visible;
 					}
 
 					object.castShadow = true;
 					object.receiveShadow = true;
-					// object.visible = this.visible;
 				} else {
 					if(object.hasOwnProperty("material")){ 
 						object.material = new THREE.MeshPhongMaterial();
@@ -702,7 +764,7 @@ class Performer {
 				this.updateFromPN(data);
 			break;
 			case 'bvh':
-				this.updateFromPN(data);
+				this.updateFromPN(data);//this.updateFromBVH(data);
 			break;
 		}
 
@@ -712,17 +774,18 @@ class Performer {
 	updateFromPN(data) {
 		for (var i=0; i<data.length; i++) {
 			var jointName = this.prefix + data[i].name.toLowerCase();
-			if (!this.getPerformer()) {
+			if (this.getPerformer() == null) {
 
 				this.loadPerformer(
 					this.type,
-					"bvhMeshGroup",
+					this.getType(),
 					this.hiddenParts,
 					1/this.modelShrink,
 					this.style,
 					this.intensity);
 			} else {
 				if (this.getPerformer().meshes[jointName]) {
+					// console.log(this.getPerformer().meshes[jointName]);
 					this.getPerformer().meshes[jointName].position.set(
 						data[i].position.x,
 						data[i].position.y,
@@ -730,6 +793,14 @@ class Performer {
 					);
 
 					this.getPerformer().meshes[jointName].quaternion.copy(data[i].quaternion);
+
+					if (this.getPerformer().skeleton) {
+						this.getPerformer().meshes[jointName].matrixAutoUpdate = true;
+		                this.getPerformer().meshes[jointName].matrixWorldNeedsUpdate = true;
+		                this.getPerformer().geometry.verticesNeedUpdate = true;
+		                this.getPerformer().geometry.normalsNeedUpdate = true;
+						
+					}
 				}
 			}
 		}
@@ -757,6 +828,19 @@ class Performer {
 
 	getScene() {
 		return this.scene;
+	}
+
+	getOffset() {
+		return this.offset;
+	}
+
+	getOffsetScale() {
+		return this.offsetScale;
+	}
+
+	updateOffsetScale(scale) {
+		var s = this.getScene();
+		s.position.x = this.getOffset()*this.getOffsetScale();
 	}
 
 	randomizeAll(switchTime) {

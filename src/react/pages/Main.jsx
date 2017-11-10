@@ -30,12 +30,7 @@ class Main extends React.Component {
 		super(props);
 		this.state = config;
 		this.BVHFiles = [
-			"models/bvh/clover/cloverChar00.bvh",
-			"models/bvh/clover/clover_markingChar00.bvh",
-			"models/bvh/clover/clover_part2_1Char00.bvh",
-			"models/bvh/clover/clover_part2_2Char00.bvh",
-			"models/bvh/clover/clover_part2_3Char00.bvh",
-			"models/bvh/clover/clover_part2Char00.bvh"
+			"models/bvh/duality_edit.bvh",
 		];
 		this.BVHPlayers = [];
 	}
@@ -56,7 +51,7 @@ class Main extends React.Component {
 		this.performers = new Performers();
 
 		//once the dom has mounted, initialize threejs
-		this.state.scene.initScene(this.state.home.target, this.state.inputs, this.state.stats, this.performers);
+		this.state.scene.initScene(this.state.home.target, this.state.inputs, this.state.stats, this.performers, this.state.backgroundColor);
 		
 		this.performers.init(this.state.scene.scene);
 
@@ -173,10 +168,10 @@ class Main extends React.Component {
 		}
 	}
 
-	updatePerformers(id, data, type) {
+	updatePerformers(id, data, type, actions) {
 		if (this.performers) {
 			if(!this.performers.exists(id)) {
-				this.performers.add(id, type);
+				this.performers.add(id, type, actions);
 			}
 			else {
 				this.performers.update(id, data);
@@ -214,7 +209,6 @@ class Main extends React.Component {
 					<InputList inputs={this.state.inputs}></InputList>
 					<PerformerList performers={this.state.performers}></PerformerList>
 					<div id="statsBox"><h5>Stats</h5></div>
-					<div id="vrButton"></div>
 				</div>
 				<div id="startOverlay">
 				</div>

@@ -33,7 +33,7 @@ class Scene {
 
 		this.environments = null;
 	}
-	initScene(startPos, inputs, statsEnabled, performers) {
+	initScene(startPos, inputs, statsEnabled, performers, backgroundColor) {
 		this.container = $('#scenes');
 
 		this.w = this.container.width();
@@ -42,12 +42,12 @@ class Scene {
 		/// Global : this.renderer
 		this.renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
 		
-		this.renderer.setClearColor( 0x000000 );
+		this.renderer.setClearColor( backgroundColor );
 		this.renderer.setSize( this.w, this.h );
 
-		this.renderer.shadowMap.enabled = true;
-		// to antialias the shadow
-		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
+		// this.renderer.shadowMap.enabled = true;
+		// // to antialias the shadow
+		// this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
 		/// Global : this.scene
 		this.scene = new THREE.Scene();
@@ -76,7 +76,7 @@ class Scene {
 		window.environments = this.environments;
 
 		//orbit control
-		this.controls = new OrbitControls(this.camera)
+		this.controls = new OrbitControls(this.camera, this.renderer.domElement)
 
 		this.controls.enableDamping = false;
 		this.controls.enableZoom = (inputs.indexOf("mouse")>=0);

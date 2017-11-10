@@ -25,11 +25,27 @@ class BVHPlayer {
 	}
 
 	play() {
-		this.mixer.clipAction( this.clip ).setEffectiveWeight( 1.0 ).play();
+		if (this.mixer.clipAction( this.clip ).setEffectiveWeight( 1.0 ).paused == false) {
+			this.mixer.clipAction( this.clip ).setEffectiveWeight( 1.0 ).play();
+		} else {
+			this.mixer.clipAction( this.clip ).setEffectiveWeight( 1.0 ).paused = false;
+		}
+	}
+
+	pause() {
+		this.mixer.clipAction( this.clip ).setEffectiveWeight( 1.0 ).paused = true;
 	}
 
 	stop() {
 		this.mixer.clipAction( this.clip ).setEffectiveWeight( 1.0 ).stop();
+	}
+
+	loop() {
+		this.mixer.clipAction( this.clip ).setEffectiveWeight( 1.0 ).setLoop (THREE.LoopRepeat);
+	}
+
+	noLoop() {
+		this.mixer.clipAction( this.clip ).setEffectiveWeight( 1.0 ).setLoop (THREE.LoopOnce, 0);
 	}
 
 	loadBVH(bvhFile) {
@@ -68,7 +84,13 @@ class BVHPlayer {
 			}), "name"), (part) => { return this.parseFrameData(part, part.name); });
 
 			if (bones.length > 0) {
-				this.callback('BVH_User_' + Object.keys(this.mixer._bindingsByRootAndName)[0], bones, 'bvh')
+				this.callback('BVH_User_' + Object.keys(this.mixer._bindingsByRootAndName)[0], bones, 'bvh', {
+					play:this.play.bind(this),
+					pause:this.pause.bind(this),
+					stop:this.stop.bind(this),
+					loop:this.loop.bind(this),
+					noLoop:this.noLoop.bind(this)
+				})
 			}
 		}
 	}

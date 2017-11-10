@@ -632,7 +632,7 @@ class InputManager {
 
 	initKeyboardCallbacks() { // Uses mousetrap: https://github.com/ccampbell/mousetrap
 
-		this.registerCallback('keyboard', 'l', 'low track', function() {
+		this.registerCallback('keyboard', 'l', 'Tracking - Low Angle', function() {
 			this.scene.cameraControl.track(
 				this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer.meshes['robot_hips'],
 				new THREE.Vector3(0, 0.5, 0),
@@ -640,7 +640,7 @@ class InputManager {
 			);
 		}.bind(this));
 
-		this.registerCallback('keyboard', ';', 'zoom out', function() {
+		this.registerCallback('keyboard', ';', 'Tracking - Zoom Out', function() {
 			this.scene.cameraControl.trackZoom(
 				new THREE.Vector3(0,0,100),
 				TWEEN.Easing.Quadratic.InOut,
@@ -648,7 +648,7 @@ class InputManager {
 			);
 		}.bind(this));
 
-		this.registerCallback('keyboard', "'", 'zoom in', function() {
+		this.registerCallback('keyboard', "'", 'Tracking - Zoom In', function() {
 			this.scene.cameraControl.trackZoom(
 				new THREE.Vector3(0,0,3),
 				TWEEN.Easing.Quadratic.InOut,
@@ -656,47 +656,47 @@ class InputManager {
 			);
 		}.bind(this));
 
-		this.registerCallback('keyboard', "a", 'randomize limb scale', function() {
-			_.each(this.parent.performers.performers, (performer) => {
-				performer.randomizeAll(5000);
-			});
-		}.bind(this));
+		// this.registerCallback('keyboard', "a", 'randomize limb scale', function() {
+		// 	_.each(this.parent.performers.performers, (performer) => {
+		// 		performer.randomizeAll(5000);
+		// 	});
+		// }.bind(this));
 
-		this.registerCallback('keyboard', "q", 'randomize limb scale', function() {
+		this.registerCallback('keyboard', "q", 'Randomize All Mesh Scale', function() {
 			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].randomizeAll(5000);
 			// this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].randomizeColors(5000);
 		}.bind(this));
 
-		this.registerCallback('keyboard', "w", 'randomize limb scale', function() {
+		this.registerCallback('keyboard', "w", 'Random Limb Scale', function() {
 			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].randomizeLimbs(5000);
 		}.bind(this));
 
 		// this.registerCallback('keyboard', 'space', 'Show Overlay', this.parent.toggleStartOverlay.bind(this.parent));
-		this.registerCallback('keyboard', 'space', 'Hide Floor', () => {this.scene.environments.environments[0].toggleGrid();});
+		this.registerCallback('keyboard', 'space', 'Toggle Floor', () => {this.scene.environments.environments[0].toggleGrid();});
 		
-		this.registerCallback('keyboard', 'n', 'Unparent', function() { //toggle environment input
+		this.registerCallback('keyboard', 'n', 'Detach Left Arm', function() { //toggle environment input
 			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('leftshoulder', false);
 		}.bind(this));
 
-		this.registerCallback('keyboard', 'm', 'Unparent', function() { //toggle environment input
+		this.registerCallback('keyboard', 'm', 'Detach Right Arm', function() { //toggle environment input
 			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('rightshoulder', false);
 		}.bind(this));
 
-		this.registerCallback('keyboard', ',', 'Unparent', function() { //toggle environment input
+		this.registerCallback('keyboard', ',', 'Detach Left Leg', function() { //toggle environment input
 			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('leftupleg', false);
 		}.bind(this));
 
-		this.registerCallback('keyboard', '.', 'Unparent', function() { //toggle environment input
+		this.registerCallback('keyboard', '.', 'Detach Right Leg', function() { //toggle environment input
 			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('rightupleg', false);
 		}.bind(this));
 
-		this.registerCallback('keyboard', '/', 'Unparent', function() { //toggle environment input
+		this.registerCallback('keyboard', '/', 'Detach Head', function() { //toggle environment input
 			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('head', false);
 		}.bind(this));
 
 
-		this.registerCallback('keyboard', '-', 'Hide GUI', this.parent.toggleGUI.bind(this.parent));
-		this.registerCallback('keyboard', '=', 'Fullscreen', this.parent.toggleFullscreen.bind(this.parent));
+		this.registerCallback('keyboard', '-', 'Toggle GUI', this.parent.toggleGUI.bind(this.parent));
+		this.registerCallback('keyboard', '=', 'Toggle Fullscreen', this.parent.toggleFullscreen.bind(this.parent));
 		
 		
 		// this.registerCallback('keyboard', '1', 'Dark Grid Theme', function() { this.switchEnvironment("grid-dark"); }.bind(this.scene));
@@ -798,7 +798,7 @@ class InputManager {
 		// 	this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].toggleWireframe();
 		// }.bind(this));
 
-		this.registerCallback('keyboard', 'esc', 'Show Keys', this.parent.openKeyboardHelp.bind(this.parent));
+		this.registerCallback('keyboard', 'esc', 'Show Keyboard Shortcuts', this.parent.openKeyboardHelp.bind(this.parent));
 
 	}
 
